@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -66,7 +67,7 @@ public class ChooseAreaActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		if(prefs.getBoolean("city_selected", false)){
+		if(prefs.getBoolean("city_selected", false)){//getBoolean的默认值为设为false，所以当第一次访问时为false，后面再Utility中设为true，所以以后访问时都是true
 			Intent intent = new Intent(this, WeatherActivity.class);
 			startActivity(intent);
 			finish();
@@ -80,7 +81,7 @@ public class ChooseAreaActivity extends Activity {
 		coolWeatherDB = CoolWeatherDB.getInstance(this);
 		listView.setOnItemClickListener(new OnItemClickListener(){
 			@Override
-			public void onItemClick(AdapterView<?>argo, View view, int index, long arg3){
+			public void onItemClick(AdapterView<?> argo, View view, int index, long arg3){
 				if(currentLevel == LEVEL_PROVINCE){//此处currentLevel实例从哪里获得？
 					selectedProvince = provinceList.get(index);
 					queryCities();
@@ -173,7 +174,7 @@ public class ChooseAreaActivity extends Activity {
 					result = Utility.handleProvincesResponse(coolWeatherDB, response);
 				}else if("city".equals(type)){
 					result = Utility.handleCitiesResponse(coolWeatherDB, response, selectedProvince.getId());
-				}else if("cunty".equals(type)){
+				}else if("county".equals(type)){
 					result = Utility.handleCountiesResponse(coolWeatherDB, response, selectedCity.getId());
 				}
 				if(result){

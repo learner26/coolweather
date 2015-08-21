@@ -1,10 +1,12 @@
 package com.coolweather.app.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
@@ -73,7 +75,9 @@ public class WeatherActivity extends Activity{
 	 * 查询县级代号所对应的天气代号、
 	 */
 	private void queryWeatherCode(String countyCode){
+		Log.d("WeatherActivity", "succeeded");
 		String address = "http://www.weather.com.cn/data/list3/city"+countyCode+".xml";
+		Log.d("WeatherActivity", countyCode);
 		queryFromServer(address,"countyCode");
 	}
 	
@@ -81,7 +85,8 @@ public class WeatherActivity extends Activity{
 	 * 查询天气代号所对应的天气。
 	 */
 	private void queryWeatherInfo(String weatherCode){
-		String address = "http://www.weather.com/cn/data/cityinfo/"+weatherCode+".xml";
+		Log.d("ChooseAreaActivity","succeeded5");
+		String address = "http://www.weather.com.cn/data/cityinfo/"+weatherCode+".html";
 		queryFromServer(address,"weatherCode");
 	}
 	
@@ -92,8 +97,12 @@ public class WeatherActivity extends Activity{
 		HttpUtil.sendHttpRequest(address, new HttpCallbackListener(){
 			@Override
 			public void onFinish(final String response){
+				Log.d("ChooseAreaActivity","succeeded6");
 				if("countyCode".equals(type)){
+					Log.d("ChooseAreaActivity","succeeded2");
 					if(!TextUtils.isEmpty(response)){
+						Log.d("ChooseAreaActivity","succeeded3");
+						Log.d("ChooseAreaActivity",response);
 						//从服务器返回的数据中解析出天气代号
 						String[] array = response.split("\\|");
 						if(array != null && array.length == 2){
@@ -102,6 +111,7 @@ public class WeatherActivity extends Activity{
 						}
 					}
 				}else if("weatherCode".equals(type)){
+					Log.d("ChooseAreaActivity","succeeded4");
 					//处理服务器返回的天气信息
 					Utility.handleWeatherResponse(WeatherActivity.this, response);
 					runOnUiThread(new Runnable(){
@@ -137,5 +147,12 @@ public class WeatherActivity extends Activity{
 		currentDateText.setText(prefs.getString("current_data", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);
+	}
+	
+	@Override
+	public void onBackPressed(){
+		Log.d("WeatherActivity", "onbackpress");
+		Intent backToChooseWeather = new Intent(this,ChooseAreaActivity.class);
+		startActivity(backToChooseWeather);
 	}
 }
